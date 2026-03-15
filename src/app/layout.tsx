@@ -1,14 +1,32 @@
-import { Inter } from 'next/font/google';
-import './globals.css';
+import type { Metadata } from "next";
+import { Manrope, Space_Grotesk } from "next/font/google";
+import "./globals.css";
 
-const inter = Inter({ subsets: ['latin'] });
+const bodyFont = Manrope({
+  subsets: ["latin"],
+  variable: "--font-body",
+});
 
-export default function RootLayout({ children }:Readonly<{
+const displayFont = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
+});
+
+export const metadata: Metadata = {
+  title: "RBAC Control Center",
+  description: "Permission-aware operations dashboard for teams, agents, and customers.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${bodyFont.variable} ${displayFont.variable}`}>
+        {children}
+      </body>
     </html>
   );
 }

@@ -1,0 +1,62 @@
+import Link from "next/link";
+import { DataTable } from "@/components/data-table";
+import { PageHeader } from "@/components/page-header";
+import { StatusBadge } from "@/components/status-badge";
+import { FormSection } from "@/components/forms/form-section";
+import { UserCreateForm } from "@/components/forms/user-create-form";
+import { getUsers, listPageMeta } from "@/lib/data";
+import { formatDate } from "@/lib/format";
+
+type UsersPageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function UsersPage({ searchParams }: UsersPageProps) {
+  const filters = await searchParams;
+  const users = await getUsers(filters);
+  const managers = users.items.filter((user) => user.role.key === "manager" || user.role.key === "admin");
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        eyebrow="Users"
+        title="Manage scoped identities"
+        description="Review the people available in your scope, create new accounts, and open detail pages for profile and permission work."
+        badge={listPageMeta(users)}
+      />
+
+      <div className="surface-panel gap-6 p-6">
+        <DataTable
+          rows={users.items}
+          columns={[
+            {
+              header: "Person",
+              render: (user) => (
+                <div className="space-y-1">
+                  <Link href={`/users/${user.id}`} className="font-medium text-neutral-900 hover:text-brand-600">
+                    {user.firstName} {user.lastName}
+                  </Link>
+                  <p className="text-xs text-neutral-500">{user.email}</p>
+                </div>
+              ),
+            },
+            { header: "Role", render: (user) => user.role.name },
+            { header: "Status", render: (user) => <StatusBadge value={user.status} /> },
+            {
+              header: "Manager",
+              render: (user) => user.manager ? `${user.manager.firstName} ${user.manager.lastName}` : "-",
+            },
+            { header: "Last login", render: (user) => formatDate(user.lastLoginAt) },
+          ]}
+        />
+      </div>
+
+      <FormSection
+        title="Create a new user"
+        description="The backend enforces role ceilings, manager rules, and scoped creation."
+      >
+        <UserCreateForm managers={managers} />
+      </FormSection>
+    </div>
+  );
+}
