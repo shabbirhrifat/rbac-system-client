@@ -21,6 +21,10 @@ import type {
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
+function pageRequest<T>(path: string) {
+  return backendRequest<T>(path, {}, { redirectOnUnauthorized: true });
+}
+
 export function buildQuery(searchParams?: SearchParams) {
   const params = new URLSearchParams();
 
@@ -39,27 +43,27 @@ export function listPageMeta<T extends { meta: { total: number; page: number; to
 }
 
 export function getDashboardSummary() {
-  return backendRequest<DashboardSummary>("/dashboard/summary");
+  return pageRequest<DashboardSummary>("/dashboard/summary");
 }
 
 export function getDashboardActivity() {
-  return backendRequest<{ items: ActivityItem[] }>("/dashboard/activity");
+  return pageRequest<{ items: ActivityItem[] }>("/dashboard/activity");
 }
 
 export function getUsers(searchParams?: SearchParams) {
-  return backendRequest<Paginated<UserListItem>>(`/users${buildQuery(searchParams)}`);
+  return pageRequest<Paginated<UserListItem>>(`/users${buildQuery(searchParams)}`);
 }
 
 export function getUser(id: string) {
-  return backendRequest<UserDetail>(`/users/${id}`);
+  return pageRequest<UserDetail>(`/users/${id}`);
 }
 
 export function getUserActivity(id: string) {
-  return backendRequest<{ items: ActivityItem[] }>(`/users/${id}/activity`);
+  return pageRequest<{ items: ActivityItem[] }>(`/users/${id}/activity`);
 }
 
 export function getRoles() {
-  return backendRequest<{
+  return pageRequest<{
     items: Array<{
       id: string;
       key: string;
@@ -72,77 +76,77 @@ export function getRoles() {
 }
 
 export function getPermissionCatalog() {
-  return backendRequest<{ items: PermissionCatalogItem[]; grouped: Record<string, PermissionCatalogItem[]> }>("/access/catalog");
+  return pageRequest<{ items: PermissionCatalogItem[]; grouped: Record<string, PermissionCatalogItem[]> }>("/access/catalog");
 }
 
 export function getGrantablePermissions() {
-  return backendRequest<{ items: PermissionCatalogItem[] }>("/access/grantable");
+  return pageRequest<{ items: PermissionCatalogItem[] }>("/access/grantable");
 }
 
 export function getUserAccess(id: string) {
-  return backendRequest<AccessUserResponse>(`/access/users/${id}`);
+  return pageRequest<AccessUserResponse>(`/access/users/${id}`);
 }
 
 export function getLeads(searchParams?: SearchParams) {
-  return backendRequest<Paginated<Lead>>(`/leads${buildQuery(searchParams)}`);
+  return pageRequest<Paginated<Lead>>(`/leads${buildQuery(searchParams)}`);
 }
 
 export function getLead(id: string) {
-  return backendRequest<Lead>(`/leads/${id}`);
+  return pageRequest<Lead>(`/leads/${id}`);
 }
 
 export function getTasks(searchParams?: SearchParams) {
-  return backendRequest<Paginated<Task>>(`/tasks${buildQuery(searchParams)}`);
+  return pageRequest<Paginated<Task>>(`/tasks${buildQuery(searchParams)}`);
 }
 
 export function getTask(id: string) {
-  return backendRequest<Task>(`/tasks/${id}`);
+  return pageRequest<Task>(`/tasks/${id}`);
 }
 
 export function getReportsOverview(searchParams?: SearchParams) {
-  return backendRequest<ReportsOverview>(`/reports/overview${buildQuery(searchParams)}`);
+  return pageRequest<ReportsOverview>(`/reports/overview${buildQuery(searchParams)}`);
 }
 
 export function getUsersReport(searchParams?: SearchParams) {
-  return backendRequest<UsersReport>(`/reports/users${buildQuery(searchParams)}`);
+  return pageRequest<UsersReport>(`/reports/users${buildQuery(searchParams)}`);
 }
 
 export function getLeadsReport(searchParams?: SearchParams) {
-  return backendRequest<LeadsReport>(`/reports/leads${buildQuery(searchParams)}`);
+  return pageRequest<LeadsReport>(`/reports/leads${buildQuery(searchParams)}`);
 }
 
 export function getTasksReport(searchParams?: SearchParams) {
-  return backendRequest<TasksReport>(`/reports/tasks${buildQuery(searchParams)}`);
+  return pageRequest<TasksReport>(`/reports/tasks${buildQuery(searchParams)}`);
 }
 
 export function getAuditLogs(searchParams?: SearchParams) {
-  return backendRequest<Paginated<ActivityItem>>(`/audit-logs${buildQuery(searchParams)}`);
+  return pageRequest<Paginated<ActivityItem>>(`/audit-logs${buildQuery(searchParams)}`);
 }
 
 export function getSettingsProfile() {
-  return backendRequest<ProfileSettings>("/settings/profile");
+  return pageRequest<ProfileSettings>("/settings/profile");
 }
 
 export function getAppSettings() {
-  return backendRequest<{ items: AppSettingItem[] }>("/settings/app");
+  return pageRequest<{ items: AppSettingItem[] }>("/settings/app");
 }
 
 export function getPortalOverview() {
-  return backendRequest<PortalOverview>("/portal/overview");
+  return pageRequest<PortalOverview>("/portal/overview");
 }
 
 export function getPortalProfile() {
-  return backendRequest<ProfileSettings>("/portal/profile");
+  return pageRequest<ProfileSettings>("/portal/profile");
 }
 
 export function getPortalTasks() {
-  return backendRequest<{ items: Task[] }>("/portal/tasks");
+  return pageRequest<{ items: Task[] }>("/portal/tasks");
 }
 
 export function getPortalActivity() {
-  return backendRequest<{ items: ActivityItem[] }>("/portal/activity");
+  return pageRequest<{ items: ActivityItem[] }>("/portal/activity");
 }
 
 export function getSessions() {
-  return backendRequest<{ sessions: SessionItem[] }>("/auth/sessions");
+  return pageRequest<{ sessions: SessionItem[] }>("/auth/sessions");
 }

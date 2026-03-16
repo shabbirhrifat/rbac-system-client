@@ -37,7 +37,7 @@ export function LeadEditForm({
       {canEditLead ? (
         <form
           action={editAction.formAction}
-          className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+          className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
         >
           <input type="hidden" name="id" value={lead.id} />
           <div className="form-grid">
@@ -84,7 +84,7 @@ export function LeadEditForm({
           <Button
             type="submit"
             disabled={editAction.pending}
-            className="w-full md:w-fit"
+            className="w-full sm:w-fit"
           >
             {editAction.pending ? (
               <LoaderCircle className="size-4 animate-spin mr-2" />
@@ -99,7 +99,7 @@ export function LeadEditForm({
           {canChangeStatus ? (
             <form
               action={statusAction.formAction}
-              className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+               className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
             >
               <input type="hidden" name="id" value={lead.id} />
               <label className="space-y-2">
@@ -116,7 +116,7 @@ export function LeadEditForm({
                 type="submit"
                 variant="outline"
                 disabled={statusAction.pending}
-                className="w-full md:w-fit"
+                 className="w-full sm:w-fit"
               >
                 {statusAction.pending ? (
                   <LoaderCircle className="size-4 animate-spin mr-2" />
@@ -129,7 +129,7 @@ export function LeadEditForm({
           {canAssignLead ? (
             <form
               action={assignAction.formAction}
-              className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+               className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
             >
               <input type="hidden" name="id" value={lead.id} />
               <label className="space-y-2">
@@ -150,7 +150,7 @@ export function LeadEditForm({
                 type="submit"
                 variant="outline"
                 disabled={assignAction.pending}
-                className="w-full md:w-fit"
+                 className="w-full sm:w-fit"
               >
                 {assignAction.pending ? (
                   <LoaderCircle className="size-4 animate-spin mr-2" />

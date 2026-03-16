@@ -12,7 +12,7 @@ export function UserCreateForm({ managers }: { managers: UserListItem[] }) {
   const { formAction, pending } = useFormAction(createUserAction);
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-5">
       <div className="form-grid">
         <label className="space-y-2">
           <span className="field-label">First name</span>
@@ -63,7 +63,7 @@ export function UserCreateForm({ managers }: { managers: UserListItem[] }) {
           </Select>
         </label>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Creating..." : "Create user"}
       </Button>

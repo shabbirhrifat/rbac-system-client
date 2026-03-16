@@ -129,9 +129,8 @@
   }
 
   .field-input {
-    @apply w-full max-w-[380px] h-[40px] rounded-[12px] border bg-white px-[10px] py-0 text-sm text-neutral-800 transition-all placeholder:text-neutral-400;
+    @apply h-11 w-full rounded-[14px] border bg-white px-4 py-0 text-sm text-neutral-800 transition-all placeholder:text-neutral-400;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    gap: 10px;
   }
 
   .field-input:focus {
@@ -150,6 +149,10 @@
   }
 
   .form-grid {
-    @apply grid gap-4 md:grid-cols-2;
+    @apply grid gap-4 md:grid-cols-2 md:gap-x-6;
+  }
+
+  label[class~="space-y-2"] {
+    @apply flex flex-col gap-2;
   }
 }

@@ -39,7 +39,7 @@ export function TaskEditForm({
       {canEditTask ? (
         <form
           action={editAction.formAction}
-          className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+          className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
         >
           <input type="hidden" name="id" value={task.id} />
           <div className="form-grid">
@@ -96,7 +96,7 @@ export function TaskEditForm({
           <Button
             type="submit"
             disabled={editAction.pending}
-            className="w-full md:w-fit"
+            className="w-full sm:w-fit"
           >
             {editAction.pending ? (
               <LoaderCircle className="size-4 animate-spin mr-2" />
@@ -111,7 +111,7 @@ export function TaskEditForm({
           {canChangeStatus ? (
             <form
               action={statusAction.formAction}
-              className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+               className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
             >
               <input type="hidden" name="id" value={task.id} />
               <label className="space-y-2">
@@ -127,7 +127,7 @@ export function TaskEditForm({
                 type="submit"
                 variant="outline"
                 disabled={statusAction.pending}
-                className="w-full md:w-fit"
+                 className="w-full sm:w-fit"
               >
                 {statusAction.pending ? (
                   <LoaderCircle className="size-4 animate-spin mr-2" />
@@ -140,7 +140,7 @@ export function TaskEditForm({
           {canAssignTask ? (
             <form
               action={assignAction.formAction}
-              className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4"
+               className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5"
             >
               <input type="hidden" name="id" value={task.id} />
               <label className="space-y-2">
@@ -161,7 +161,7 @@ export function TaskEditForm({
                 type="submit"
                 variant="outline"
                 disabled={assignAction.pending}
-                className="w-full md:w-fit"
+                 className="w-full sm:w-fit"
               >
                 {assignAction.pending ? (
                   <LoaderCircle className="size-4 animate-spin mr-2" />

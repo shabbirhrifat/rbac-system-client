@@ -11,7 +11,7 @@ export function SettingsProfileForm({ profile }: { profile: ProfileSettings }) {
   const { formAction, pending } = useFormAction(updateSettingsProfileAction);
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-5">
       <div className="form-grid">
         <label className="space-y-2"><span className="field-label">First name</span><Input name="firstName" defaultValue={profile.firstName} /></label>
         <label className="space-y-2"><span className="field-label">Last name</span><Input name="lastName" defaultValue={profile.lastName} /></label>
@@ -25,7 +25,7 @@ export function SettingsProfileForm({ profile }: { profile: ProfileSettings }) {
         <label className="space-y-2"><span className="field-label">Current password</span><Input name="currentPassword" type="password" /></label>
         <label className="space-y-2"><span className="field-label">New password</span><Input name="newPassword" type="password" /></label>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Saving..." : "Save settings"}
       </Button>

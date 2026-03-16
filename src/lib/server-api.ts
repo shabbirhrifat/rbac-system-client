@@ -1,10 +1,12 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ACCESS_COOKIE_NAME, getApiBaseUrl, REFRESH_COOKIE_NAME } from "@/lib/config";
 import type { AuthPayload, RouteContext } from "@/types/api";
 
 type ApiRequestOptions = {
   auth?: boolean;
   raw?: boolean;
+  redirectOnUnauthorized?: boolean;
 };
 
 export class ApiError extends Error {
@@ -57,6 +59,11 @@ export async function backendRequest<T>(
 
   if (!response.ok) {
     const payload = await parseResponse(response);
+
+    if (response.status === 401 && options.redirectOnUnauthorized) {
+      redirect("/login");
+    }
+
     throw new ApiError(getErrorMessage(payload), response.status, payload);
   }
 
@@ -86,9 +93,11 @@ export async function getSessionRouteContext(): Promise<RouteContext> {
   }
 }
 
-export async function getCurrentUser() {
+export async function getCurrentUser(redirectOnUnauthorized = false) {
   return backendRequest<Omit<AuthPayload, "accessToken" | "accessTokenExpiresIn">>(
     "/auth/me",
+    {},
+    { redirectOnUnauthorized },
   );
 }
 

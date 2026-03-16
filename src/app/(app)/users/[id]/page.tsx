@@ -2,6 +2,7 @@ import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
 import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { UserEditForm } from "@/components/forms/user-edit-form";
 import { UserStatusForm } from "@/components/forms/user-status-form";
 import { getUser, getUserActivity, getUsers } from "@/lib/data";
@@ -39,13 +40,33 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
         ))}
       </div>
 
-      <FormSection title="Profile settings" description="Update editable profile and role fields.">
-        <UserEditForm user={user} managers={managers} />
-      </FormSection>
+      <FormSection
+        title="Profile settings"
+        description="Update editable profile and role fields."
+        actions={
+          <CreateFormSheet
+            triggerLabel="Edit profile"
+            title="Profile settings"
+            description="Update editable profile fields and role assignments in a focused panel."
+          >
+            <UserEditForm user={user} managers={managers} />
+          </CreateFormSheet>
+        }
+      />
 
-      <FormSection title="Status and manager controls" description="Apply scoped lifecycle changes and team reassignment rules.">
-        <UserStatusForm user={user} managers={managers} />
-      </FormSection>
+      <FormSection
+        title="Status and manager controls"
+        description="Apply scoped lifecycle changes and team reassignment rules."
+        actions={
+          <CreateFormSheet
+            triggerLabel="Open controls"
+            title="Status and manager controls"
+            description="Apply lifecycle changes and reassignment rules from a dedicated side panel."
+          >
+            <UserStatusForm user={user} managers={managers} />
+          </CreateFormSheet>
+        }
+      />
 
       <div className="surface-panel gap-6 p-6">
         <div className="flex items-center justify-between">

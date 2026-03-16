@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { LeadEditForm } from "@/components/forms/lead-edit-form";
 import { getLead, getUsers } from "@/lib/data";
 import { formatDate } from "@/lib/format";
@@ -78,15 +79,23 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
         <FormSection
           title="Lead controls"
           description="The backend validates assignment scope and customer-role links."
+          actions={
+            <CreateFormSheet
+              triggerLabel="Open controls"
+              title="Lead controls"
+              description="Update lead profile details, status, and assignment from a dedicated side panel."
+            >
+              <LeadEditForm
+                lead={lead}
+                users={users.items}
+                customers={customers}
+                canEditLead={canEditLead}
+                canChangeStatus={canChangeStatus}
+                canAssignLead={canAssignLead}
+              />
+            </CreateFormSheet>
+          }
         >
-          <LeadEditForm
-            lead={lead}
-            users={users.items}
-            customers={customers}
-            canEditLead={canEditLead}
-            canChangeStatus={canChangeStatus}
-            canAssignLead={canAssignLead}
-          />
         </FormSection>
       ) : null}
     </div>

@@ -13,7 +13,7 @@ export function UserStatusForm({ user, managers }: { user: UserDetail; managers:
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">
-      <form action={statusAction.formAction} className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4">
+      <form action={statusAction.formAction} className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5">
         <input type="hidden" name="id" value={user.id} />
         <label className="space-y-2">
           <span className="field-label">Account status</span>
@@ -23,13 +23,13 @@ export function UserStatusForm({ user, managers }: { user: UserDetail; managers:
             <option value="banned">Banned</option>
           </Select>
         </label>
-        <Button type="submit" variant="outline" disabled={statusAction.pending} className="w-full md:w-fit">
+        <Button type="submit" variant="outline" disabled={statusAction.pending} className="w-full sm:w-fit">
           {statusAction.pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
           {statusAction.pending ? "Updating..." : "Update status"}
         </Button>
       </form>
 
-      <form action={managerAction.formAction} className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4">
+      <form action={managerAction.formAction} className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4 sm:p-5">
         <input type="hidden" name="id" value={user.id} />
         <label className="space-y-2">
           <span className="field-label">Assigned manager</span>
@@ -42,7 +42,7 @@ export function UserStatusForm({ user, managers }: { user: UserDetail; managers:
             ))}
           </Select>
         </label>
-        <Button type="submit" variant="outline" disabled={managerAction.pending} className="w-full md:w-fit">
+        <Button type="submit" variant="outline" disabled={managerAction.pending} className="w-full sm:w-fit">
           {managerAction.pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
           {managerAction.pending ? "Reassigning..." : "Reassign manager"}
         </Button>

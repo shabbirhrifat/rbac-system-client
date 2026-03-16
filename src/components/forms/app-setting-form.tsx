@@ -18,7 +18,7 @@ export function AppSettingForm({ setting }: { setting: AppSettingItem }) {
         <p className="mt-1 text-xs text-neutral-500">Edit JSON payload and save to upsert this app-level setting.</p>
       </div>
       <Textarea name="value" defaultValue={JSON.stringify(setting.value, null, 2)} className="min-h-40 font-mono text-xs" />
-      <Button type="submit" variant="outline" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" variant="outline" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Updating..." : "Update setting"}
       </Button>

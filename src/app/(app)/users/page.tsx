@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { UserCreateForm } from "@/components/forms/user-create-form";
 import { getUsers, listPageMeta } from "@/lib/data";
 import { formatDate } from "@/lib/format";
@@ -23,6 +23,15 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
         title="Manage scoped identities"
         description="Review the people available in your scope, create new accounts, and open detail pages for profile and permission work."
         badge={listPageMeta(users)}
+        actions={
+          <CreateFormSheet
+            triggerLabel="Create user"
+            title="Create a new user"
+            description="The backend enforces role ceilings, manager rules, and scoped creation."
+          >
+            <UserCreateForm managers={managers} />
+          </CreateFormSheet>
+        }
       />
 
       <div className="surface-panel gap-6 p-6">
@@ -50,13 +59,6 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
           ]}
         />
       </div>
-
-      <FormSection
-        title="Create a new user"
-        description="The backend enforces role ceilings, manager rules, and scoped creation."
-      >
-        <UserCreateForm managers={managers} />
-      </FormSection>
     </div>
   );
 }

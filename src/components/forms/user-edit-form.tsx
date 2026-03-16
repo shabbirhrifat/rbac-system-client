@@ -12,7 +12,7 @@ export function UserEditForm({ user, managers }: { user: UserDetail; managers: U
   const { formAction, pending } = useFormAction(updateUserAction);
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-5">
       <input type="hidden" name="id" value={user.id} />
       <div className="form-grid">
         <label className="space-y-2">
@@ -52,7 +52,7 @@ export function UserEditForm({ user, managers }: { user: UserDetail; managers: U
           </Select>
         </label>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Saving..." : "Save profile changes"}
       </Button>

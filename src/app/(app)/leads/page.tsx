@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { LeadCreateForm } from "@/components/forms/lead-create-form";
 import { getLeads, getUsers, listPageMeta } from "@/lib/data";
 import { formatDate } from "@/lib/format";
@@ -35,6 +35,17 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
         title="Work the scoped pipeline"
         description="Track origin, assignment, and status progression for the leads your current role is allowed to see."
         badge={listPageMeta(leads)}
+        actions={
+          canCreateLead ? (
+            <CreateFormSheet
+              triggerLabel="Create lead"
+              title="Create lead"
+              description="Create records inside your scope and link them to customers or assignees when available."
+            >
+              <LeadCreateForm users={users.items} customers={customers} />
+            </CreateFormSheet>
+          ) : null
+        }
       />
 
       <div className="surface-panel gap-6 p-6">
@@ -79,15 +90,6 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
           ]}
         />
       </div>
-
-      {canCreateLead ? (
-        <FormSection
-          title="Create lead"
-          description="Create records inside your scope and link them to customers or assignees when available."
-        >
-          <LeadCreateForm users={users.items} customers={customers} />
-        </FormSection>
-      ) : null}
     </div>
   );
 }

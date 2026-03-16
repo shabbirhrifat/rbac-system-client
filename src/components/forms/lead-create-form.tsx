@@ -13,7 +13,7 @@ export function LeadCreateForm({ users, customers }: { users: UserListItem[]; cu
   const { formAction, pending } = useFormAction(createLeadAction);
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-5">
       <div className="form-grid">
         <label className="space-y-2"><span className="field-label">Name</span><Input name="name" required /></label>
         <label className="space-y-2"><span className="field-label">Company</span><Input name="company" /></label>
@@ -30,7 +30,7 @@ export function LeadCreateForm({ users, customers }: { users: UserListItem[]; cu
         </label>
         <label className="space-y-2 md:col-span-2"><span className="field-label">Notes</span><Textarea name="notes" /></label>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Creating..." : "Create lead"}
       </Button>

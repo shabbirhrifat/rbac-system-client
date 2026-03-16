@@ -5,9 +5,10 @@ type PageHeaderProps = {
   title: string;
   description: string;
   badge?: string;
+  actions?: React.ReactNode;
 };
 
-export function PageHeader({ eyebrow, title, description, badge }: PageHeaderProps) {
+export function PageHeader({ eyebrow, title, description, badge, actions }: PageHeaderProps) {
   return (
     <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
       <div className="space-y-3">
@@ -19,7 +20,12 @@ export function PageHeader({ eyebrow, title, description, badge }: PageHeaderPro
           <p className="max-w-2xl text-sm leading-7 text-neutral-500 md:text-base">{description}</p>
         </div>
       </div>
-      {badge ? <Badge tone="brand">{badge}</Badge> : null}
+      {badge || actions ? (
+        <div className="flex flex-col gap-3 self-start sm:flex-row sm:flex-wrap sm:items-center lg:self-auto">
+          {badge ? <Badge tone="brand">{badge}</Badge> : null}
+          {actions}
+        </div>
+      ) : null}
     </div>
   );
 }

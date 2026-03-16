@@ -2,7 +2,7 @@ import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
-import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { TaskCreateForm } from "@/components/forms/task-create-form";
 import { getLeads, getTasks, getUsers, listPageMeta } from "@/lib/data";
 import { formatDate } from "@/lib/format";
@@ -44,6 +44,21 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         title="Coordinate work items"
         description="Manage assigned tasks with due dates, linked leads or customers, and status progression."
         badge={listPageMeta(tasks)}
+        actions={
+          canCreateTask ? (
+            <CreateFormSheet
+              triggerLabel="Create task"
+              title="Create task"
+              description="Create scoped work items and attach them to leads or customers when relevant."
+            >
+              <TaskCreateForm
+                users={users.items}
+                leads={leads.items}
+                customers={customers}
+              />
+            </CreateFormSheet>
+          ) : null
+        }
       />
 
       <div className="surface-panel gap-6 p-6">
@@ -85,19 +100,6 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
           ]}
         />
       </div>
-
-      {canCreateTask ? (
-        <FormSection
-          title="Create task"
-          description="Create scoped work items and attach them to leads or customers when relevant."
-        >
-          <TaskCreateForm
-            users={users.items}
-            leads={leads.items}
-            customers={customers}
-          />
-        </FormSection>
-      ) : null}
     </div>
   );
 }

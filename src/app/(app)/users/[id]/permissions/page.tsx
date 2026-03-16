@@ -1,5 +1,6 @@
 import { PageHeader } from "@/components/page-header";
 import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { PermissionOverridesForm } from "@/components/forms/permission-overrides-form";
 import { getGrantablePermissions, getUserAccess } from "@/lib/data";
 
@@ -35,9 +36,19 @@ export default async function UserPermissionsPage({ params }: UserPermissionsPag
         </div>
       </div>
 
-      <FormSection title="Replace permission overrides" description="The backend increments permission version and validates every override against your current grantable surface.">
-        <PermissionOverridesForm userAccess={userAccess} grantable={grantable.items} />
-      </FormSection>
+      <FormSection
+        title="Replace permission overrides"
+        description="The backend increments permission version and validates every override against your current grantable surface."
+        actions={
+          <CreateFormSheet
+            triggerLabel="Edit overrides"
+            title="Replace permission overrides"
+            description="Review grantable permissions and replace user-specific overrides in one audited update."
+          >
+            <PermissionOverridesForm userAccess={userAccess} grantable={grantable.items} />
+          </CreateFormSheet>
+        }
+      />
     </div>
   );
 }

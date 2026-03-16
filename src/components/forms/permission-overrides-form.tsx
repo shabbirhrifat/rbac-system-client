@@ -46,7 +46,7 @@ export function PermissionOverridesForm({
           </div>
         </div>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Replacing..." : "Replace overrides"}
       </Button>

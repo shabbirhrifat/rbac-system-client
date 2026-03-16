@@ -13,7 +13,7 @@ export function TaskCreateForm({ users, leads, customers }: { users: UserListIte
   const { formAction, pending } = useFormAction(createTaskAction);
 
   return (
-    <form action={formAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-5">
       <div className="form-grid">
         <label className="space-y-2"><span className="field-label">Title</span><Input name="title" required /></label>
         <label className="space-y-2"><span className="field-label">Priority</span><Select name="priority" defaultValue="medium"><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></Select></label>
@@ -23,7 +23,7 @@ export function TaskCreateForm({ users, leads, customers }: { users: UserListIte
         <label className="space-y-2"><span className="field-label">Customer link</span><Select name="customerId" defaultValue=""><option value="">No customer</option>{customers.map((customer) => <option key={customer.id} value={customer.id}>{customer.firstName} {customer.lastName}</option>)}</Select></label>
         <label className="space-y-2 md:col-span-2"><span className="field-label">Description</span><Textarea name="description" /></label>
       </div>
-      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+      <Button type="submit" disabled={pending} className="w-full sm:w-fit">
         {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
         {pending ? "Creating..." : "Create task"}
       </Button>

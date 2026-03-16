@@ -1,6 +1,7 @@
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { FormSection } from "@/components/forms/form-section";
+import { CreateFormSheet } from "@/components/forms/create-form-sheet";
 import { TaskEditForm } from "@/components/forms/task-edit-form";
 import { getLeads, getTask, getUsers } from "@/lib/data";
 import { formatDate } from "@/lib/format";
@@ -87,16 +88,24 @@ export default async function TaskDetailPage({ params }: TaskDetailPageProps) {
         <FormSection
           title="Task controls"
           description="Status and assignment are audited and permission-guarded by the backend."
+          actions={
+            <CreateFormSheet
+              triggerLabel="Open controls"
+              title="Task controls"
+              description="Edit task details, reassignment, and status changes in a wider right-side panel."
+            >
+              <TaskEditForm
+                task={task}
+                users={users.items}
+                leads={leads.items}
+                customers={customers}
+                canEditTask={canEditTask}
+                canChangeStatus={canChangeStatus}
+                canAssignTask={canAssignTask}
+              />
+            </CreateFormSheet>
+          }
         >
-          <TaskEditForm
-            task={task}
-            users={users.items}
-            leads={leads.items}
-            customers={customers}
-            canEditTask={canEditTask}
-            canChangeStatus={canChangeStatus}
-            canAssignTask={canAssignTask}
-          />
         </FormSection>
       ) : null}
     </div>
