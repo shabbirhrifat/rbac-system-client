@@ -12,7 +12,7 @@ const initialState: ActionState = {};
  */
 export function useFormAction(
   action: (prev: ActionState, formData: FormData) => Promise<ActionState>,
-  options?: { successMessage?: string },
+  options?: { successMessage?: string; onSuccess?: () => void },
 ) {
   const [state, formAction, pending] = useActionState(action, initialState);
   const prevStateRef = useRef(state);
@@ -26,8 +26,9 @@ export function useFormAction(
     }
     if (state.success) {
       toast.success(state.success ?? options?.successMessage);
+      options?.onSuccess?.();
     }
-  }, [state, options?.successMessage]);
+  }, [state, options]);
 
   return { state, formAction, pending };
 }

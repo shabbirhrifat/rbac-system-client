@@ -15,8 +15,8 @@ type AppShellProps = {
 export function AppShell({ currentUser, sidebarItems, children }: AppShellProps) {
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(255,98,62,0.12),_transparent_30%),linear-gradient(180deg,_#fffdfa_0%,_#f7f8fb_42%,_#f3f5f8_100%)] text-neutral-900">
-      <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col gap-6 px-4 py-4 md:px-6 lg:flex-row lg:px-8">
-        <aside className="surface-muted flex h-fit flex-col gap-6 p-5 lg:sticky lg:top-6 lg:w-[300px] lg:self-start">
+      <div className="mx-auto flex min-h-screen max-w-[1600px] flex-col gap-5 px-4 py-4 md:px-6 lg:flex-row lg:gap-6 lg:px-8">
+        <aside className="surface-muted hidden h-fit min-w-0 flex-col gap-6 overflow-hidden p-5 lg:sticky lg:top-6 lg:flex lg:w-[300px] lg:shrink-0 lg:self-start">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-2xl bg-neutral-950 text-white shadow-[0_20px_50px_-30px_rgba(17,24,39,0.9)]">
@@ -51,23 +51,26 @@ export function AppShell({ currentUser, sidebarItems, children }: AppShellProps)
           </div>
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col gap-6">
-          <header className="surface-muted flex flex-col gap-4 px-5 py-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex min-w-0 flex-1 flex-col gap-5 lg:gap-6">
+          <header className="surface-muted flex flex-col gap-4 px-4 py-4 sm:px-5 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-2 text-sm text-neutral-500">
               <Link href="/dashboard" className="font-medium text-neutral-900">Workspace</Link>
               <ChevronRight className="size-4" />
               <span>Permission-aware operations</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="lg:hidden">
+                <SidebarNav items={sidebarItems} />
+              </div>
               <Badge tone="brand">{currentUser.role.name}</Badge>
               <button className="inline-flex size-10 items-center justify-center rounded-2xl bg-white text-neutral-600 ring-1 ring-neutral-200 transition hover:text-neutral-950">
                 <Bell className="size-4" />
               </button>
-              <Link href="/settings" className="inline-flex items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-neutral-200 transition hover:ring-neutral-300">
+              <Link href="/settings" className="inline-flex min-w-0 items-center gap-3 rounded-2xl bg-white px-3 py-2 ring-1 ring-neutral-200 transition hover:ring-neutral-300">
                 <span className="flex size-9 items-center justify-center rounded-xl bg-brand-50 font-semibold text-brand-700">
                   {initials(currentUser.firstName, currentUser.lastName)}
                 </span>
-                <span className="hidden text-left md:block">
+                <span className="hidden min-w-0 text-left md:block">
                   <span className="block text-sm font-semibold text-neutral-900">{currentUser.firstName} {currentUser.lastName}</span>
                   <span className="block text-xs text-neutral-500">{currentUser.email}</span>
                 </span>

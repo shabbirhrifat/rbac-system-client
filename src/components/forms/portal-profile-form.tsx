@@ -2,13 +2,17 @@
 
 import { LoaderCircle } from "lucide-react";
 import { updatePortalProfileAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useFormAction } from "@/lib/use-form-action";
 import type { ProfileSettings } from "@/types/api";
 
 export function PortalProfileForm({ profile }: { profile: ProfileSettings }) {
-  const { formAction, pending } = useFormAction(updatePortalProfileAction);
+  const sheet = useSheetAutoClose();
+  const { formAction, pending } = useFormAction(updatePortalProfileAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <form action={formAction} className="grid gap-5">

@@ -1,8 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
+import type { VariantProps } from "class-variance-authority";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -11,9 +13,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import type { buttonVariants } from "@/components/ui/button";
-import type { VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
+
+const SheetAutoCloseContext = createContext<{ close: () => void } | null>(null);
 
 type CreateFormSheetProps = {
   triggerLabel: string;
@@ -38,8 +40,11 @@ export function CreateFormSheet({
   side = "right",
   variant = "default",
 }: CreateFormSheetProps) {
+  const [open, setOpen] = useState(false);
+  const contextValue = useMemo(() => ({ close: () => setOpen(false) }), []);
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           type="button"
@@ -50,15 +55,21 @@ export function CreateFormSheet({
           {triggerLabel}
         </Button>
       </SheetTrigger>
-      <SheetContent side={side} className={cn("p-0", contentClassName)}>
-        <SheetHeader>
-          <SheetTitle>{title}</SheetTitle>
-          <SheetDescription>{description}</SheetDescription>
-        </SheetHeader>
-        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
-          {children}
-        </div>
-      </SheetContent>
+      <SheetAutoCloseContext.Provider value={contextValue}>
+        <SheetContent side={side} className={cn("p-0", contentClassName)}>
+          <SheetHeader>
+            <SheetTitle>{title}</SheetTitle>
+            <SheetDescription>{description}</SheetDescription>
+          </SheetHeader>
+          <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">
+            {children}
+          </div>
+        </SheetContent>
+      </SheetAutoCloseContext.Provider>
     </Sheet>
   );
+}
+
+export function useSheetAutoClose() {
+  return useContext(SheetAutoCloseContext);
 }

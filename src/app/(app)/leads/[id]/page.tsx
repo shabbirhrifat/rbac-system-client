@@ -40,7 +40,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
         badge={lead.company ?? "No company"}
       />
 
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="surface-panel gap-2 p-5">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">
             Status
@@ -95,8 +95,7 @@ export default async function LeadDetailPage({ params }: LeadDetailPageProps) {
               />
             </CreateFormSheet>
           }
-        >
-        </FormSection>
+        />
       ) : null}
     </div>
   );

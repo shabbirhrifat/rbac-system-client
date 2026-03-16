@@ -6,6 +6,7 @@ import {
   updateLeadAction,
   updateLeadStatusAction,
 } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -28,9 +29,16 @@ export function LeadEditForm({
   canChangeStatus: boolean;
   canAssignLead: boolean;
 }) {
-  const editAction = useFormAction(updateLeadAction);
-  const statusAction = useFormAction(updateLeadStatusAction);
-  const assignAction = useFormAction(assignLeadAction);
+  const sheet = useSheetAutoClose();
+  const editAction = useFormAction(updateLeadAction, {
+    onSuccess: () => sheet?.close(),
+  });
+  const statusAction = useFormAction(updateLeadStatusAction, {
+    onSuccess: () => sheet?.close(),
+  });
+  const assignAction = useFormAction(assignLeadAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <div className="grid gap-5">

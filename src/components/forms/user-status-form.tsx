@@ -2,14 +2,20 @@
 
 import { LoaderCircle } from "lucide-react";
 import { updateUserManagerAction, updateUserStatusAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { useFormAction } from "@/lib/use-form-action";
 import type { UserDetail, UserListItem } from "@/types/api";
 
 export function UserStatusForm({ user, managers }: { user: UserDetail; managers: UserListItem[] }) {
-  const statusAction = useFormAction(updateUserStatusAction);
-  const managerAction = useFormAction(updateUserManagerAction);
+  const sheet = useSheetAutoClose();
+  const statusAction = useFormAction(updateUserStatusAction, {
+    onSuccess: () => sheet?.close(),
+  });
+  const managerAction = useFormAction(updateUserManagerAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <div className="grid gap-5 lg:grid-cols-2">

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { CreateFormSheet } from "@/components/forms/create-form-sheet";
@@ -61,44 +62,52 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
         }
       />
 
-      <div className="surface-panel gap-6 p-6">
-        <DataTable
-          rows={tasks.items}
-          columns={[
-            {
-              header: "Task",
-              render: (task) => (
-                <div className="space-y-1">
-                  <Link
-                    href={`/tasks/${task.id}`}
-                    className="font-medium text-neutral-900 hover:text-brand-600"
-                  >
-                    {task.title}
-                  </Link>
-                  <p className="text-xs text-neutral-500">
-                    {task.description ?? "No description"}
-                  </p>
-                </div>
-              ),
-            },
-            {
-              header: "Status",
-              render: (task) => <StatusBadge value={task.status} />,
-            },
-            {
-              header: "Priority",
-              render: (task) => <StatusBadge value={task.priority} />,
-            },
-            {
-              header: "Assignee",
-              render: (task) =>
-                task.assignedToUser
-                  ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}`
-                  : "Unassigned",
-            },
-            { header: "Due", render: (task) => formatDate(task.dueAt) },
-          ]}
-        />
+      <div className="surface-panel gap-6 p-5 sm:p-6">
+        {tasks.items.length ? (
+          <DataTable
+            rows={tasks.items}
+            getRowKey={(task) => task.id}
+            columns={[
+              {
+                header: "Task",
+                render: (task) => (
+                  <div className="space-y-1">
+                    <Link
+                      href={`/tasks/${task.id}`}
+                      className="font-medium text-neutral-900 hover:text-brand-600"
+                    >
+                      {task.title}
+                    </Link>
+                    <p className="text-xs text-neutral-500">
+                      {task.description ?? "No description"}
+                    </p>
+                  </div>
+                ),
+              },
+              {
+                header: "Status",
+                render: (task) => <StatusBadge value={task.status} />,
+              },
+              {
+                header: "Priority",
+                render: (task) => <StatusBadge value={task.priority} />,
+              },
+              {
+                header: "Assignee",
+                render: (task) =>
+                  task.assignedToUser
+                    ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}`
+                    : "Unassigned",
+              },
+              { header: "Due", render: (task) => formatDate(task.dueAt) },
+            ]}
+          />
+        ) : (
+          <EmptyState
+            title="No tasks to review"
+            description="Scoped work items will appear here with their due dates, status progression, and linked owners once they are available."
+          />
+        )}
       </div>
     </div>
   );

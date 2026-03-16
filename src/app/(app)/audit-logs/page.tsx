@@ -22,9 +22,10 @@ export default async function AuditLogsPage({ searchParams }: AuditLogsPageProps
       />
 
       {auditLogs.items.length ? (
-        <div className="surface-panel gap-6 p-6">
+        <div className="surface-panel gap-6 p-5 sm:p-6">
           <DataTable
             rows={auditLogs.items}
+            getRowKey={(row) => row.id}
             columns={[
               { header: "Action", render: (row) => sentenceCase(row.action) },
               { header: "Module", render: (row) => sentenceCase(row.module) },

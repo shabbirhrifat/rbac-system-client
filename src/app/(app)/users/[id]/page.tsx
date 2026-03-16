@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { FormSection } from "@/components/forms/form-section";
 import { CreateFormSheet } from "@/components/forms/create-form-sheet";
@@ -26,14 +27,14 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
         badge={user.role.name}
       />
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
           ["Email", user.email],
           ["Status", user.status],
           ["Permission version", String(user.permissionVersion)],
           ["Last login", formatDate(user.lastLoginAt)],
         ].map(([label, value]) => (
-          <div key={label} className="surface-panel gap-2 p-5">
+          <div key={label} className="surface-panel gap-2 p-5 sm:p-6">
             <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">{label}</p>
             <p className="text-base font-semibold text-neutral-900">{value}</p>
           </div>
@@ -68,25 +69,33 @@ export default async function UserDetailPage({ params }: UserDetailPageProps) {
         }
       />
 
-      <div className="surface-panel gap-6 p-6">
-        <div className="flex items-center justify-between">
+      <div className="surface-panel gap-6 p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="font-display text-2xl font-semibold tracking-tight text-neutral-950">Recent activity</h2>
             <p className="text-sm text-neutral-500">Latest audit rows where this user is actor or target.</p>
           </div>
-          <Link href={`/users/${user.id}/permissions`} className="rounded-2xl bg-neutral-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800">
+          <Link href={`/users/${user.id}/permissions`} className="inline-flex w-full items-center justify-center rounded-2xl bg-neutral-950 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-neutral-800 sm:w-auto">
             Open permission editor
           </Link>
         </div>
-        <DataTable
-          rows={activity.items}
-          columns={[
-            { header: "Action", render: (row) => row.action },
-            { header: "Module", render: (row) => row.module },
-            { header: "Actor", render: (row) => row.actorUser ? `${row.actorUser.firstName} ${row.actorUser.lastName}` : "System" },
-            { header: "Time", render: (row) => formatDate(row.createdAt) },
-          ]}
-        />
+        {activity.items.length ? (
+          <DataTable
+            rows={activity.items}
+            getRowKey={(row) => row.id}
+            columns={[
+              { header: "Action", render: (row) => row.action },
+              { header: "Module", render: (row) => row.module },
+              { header: "Actor", render: (row) => row.actorUser ? `${row.actorUser.firstName} ${row.actorUser.lastName}` : "System" },
+              { header: "Time", render: (row) => formatDate(row.createdAt) },
+            ]}
+          />
+        ) : (
+          <EmptyState
+            title="No recent activity for this user"
+            description="When this person acts on protected resources or becomes the target of a logged event, those entries will appear here."
+          />
+        )}
       </div>
     </div>
   );

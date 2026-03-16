@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { CreateFormSheet } from "@/components/forms/create-form-sheet";
@@ -48,47 +49,55 @@ export default async function LeadsPage({ searchParams }: LeadsPageProps) {
         }
       />
 
-      <div className="surface-panel gap-6 p-6">
-        <DataTable
-          rows={leads.items}
-          columns={[
-            {
-              header: "Lead",
-              render: (lead) => (
-                <div className="space-y-1">
-                  <Link
-                    href={`/leads/${lead.id}`}
-                    className="font-medium text-neutral-900 hover:text-brand-600"
-                  >
-                    {lead.name}
-                  </Link>
-                  <p className="text-xs text-neutral-500">
-                    {lead.company ?? lead.email ?? "No company"}
-                  </p>
-                </div>
-              ),
-            },
-            {
-              header: "Status",
-              render: (lead) => <StatusBadge value={lead.status} />,
-            },
-            {
-              header: "Assignee",
-              render: (lead) =>
-                lead.assignedToUser
-                  ? `${lead.assignedToUser.firstName} ${lead.assignedToUser.lastName}`
-                  : "Unassigned",
-            },
-            {
-              header: "Customer",
-              render: (lead) =>
-                lead.customer
-                  ? `${lead.customer.firstName} ${lead.customer.lastName}`
-                  : "-",
-            },
-            { header: "Updated", render: (lead) => formatDate(lead.updatedAt) },
-          ]}
-        />
+      <div className="surface-panel gap-6 p-5 sm:p-6">
+        {leads.items.length ? (
+          <DataTable
+            rows={leads.items}
+            getRowKey={(lead) => lead.id}
+            columns={[
+              {
+                header: "Lead",
+                render: (lead) => (
+                  <div className="space-y-1">
+                    <Link
+                      href={`/leads/${lead.id}`}
+                      className="font-medium text-neutral-900 hover:text-brand-600"
+                    >
+                      {lead.name}
+                    </Link>
+                    <p className="text-xs text-neutral-500">
+                      {lead.company ?? lead.email ?? "No company"}
+                    </p>
+                  </div>
+                ),
+              },
+              {
+                header: "Status",
+                render: (lead) => <StatusBadge value={lead.status} />,
+              },
+              {
+                header: "Assignee",
+                render: (lead) =>
+                  lead.assignedToUser
+                    ? `${lead.assignedToUser.firstName} ${lead.assignedToUser.lastName}`
+                    : "Unassigned",
+              },
+              {
+                header: "Customer",
+                render: (lead) =>
+                  lead.customer
+                    ? `${lead.customer.firstName} ${lead.customer.lastName}`
+                    : "-",
+              },
+              { header: "Updated", render: (lead) => formatDate(lead.updatedAt) },
+            ]}
+          />
+        ) : (
+          <EmptyState
+            title="No leads available yet"
+            description="Once leads exist inside your visible scope, you will be able to review their status, ownership, and recent updates here."
+          />
+        )}
       </div>
     </div>
   );

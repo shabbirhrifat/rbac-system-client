@@ -6,6 +6,7 @@ import {
   updateTaskAction,
   updateTaskStatusAction,
 } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -30,9 +31,16 @@ export function TaskEditForm({
   canChangeStatus: boolean;
   canAssignTask: boolean;
 }) {
-  const editAction = useFormAction(updateTaskAction);
-  const statusAction = useFormAction(updateTaskStatusAction);
-  const assignAction = useFormAction(assignTaskAction);
+  const sheet = useSheetAutoClose();
+  const editAction = useFormAction(updateTaskAction, {
+    onSuccess: () => sheet?.close(),
+  });
+  const statusAction = useFormAction(updateTaskStatusAction, {
+    onSuccess: () => sheet?.close(),
+  });
+  const assignAction = useFormAction(assignTaskAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <div className="grid gap-5">

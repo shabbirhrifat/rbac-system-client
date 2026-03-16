@@ -19,16 +19,16 @@ export default async function DashboardPage() {
         badge="Live scope summary"
       />
 
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Users in scope" value={formatCompactNumber(summary.counts.users)} detail="Accessible people records for your current role." />
         <MetricCard label="Leads" value={formatCompactNumber(summary.counts.leads)} detail={`${summary.highlights.activeLeads} currently active across the funnel.`} />
         <MetricCard label="Tasks" value={formatCompactNumber(summary.counts.tasks)} detail={`${summary.highlights.pendingTasks} still need attention.`} />
         <MetricCard label="Recent audit events" value={formatCompactNumber(summary.counts.recentAuditCount)} detail="Protected actions recorded in the latest window." />
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
-        <div className="surface-panel gap-5 p-6">
-          <div className="flex items-center justify-between">
+      <section className="grid gap-4 xl:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]">
+        <div className="surface-panel gap-5 p-5 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="eyebrow">Recent activity</p>
               <h2 className="font-display text-2xl font-semibold tracking-tight text-neutral-950">Latest audit timeline</h2>
@@ -39,6 +39,7 @@ export default async function DashboardPage() {
           {activity.items.length ? (
             <DataTable
               rows={activity.items}
+              getRowKey={(row) => row.id}
               columns={[
                 {
                   header: "Action",
@@ -68,8 +69,8 @@ export default async function DashboardPage() {
           )}
         </div>
 
-        <div className="grid gap-4">
-          <div className="surface-panel gap-4 p-6">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-1">
+          <div className="surface-panel gap-4 p-5 sm:p-6">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-brand-50 p-3 text-brand-700"><Users className="size-5" /></div>
               <div>
@@ -80,7 +81,7 @@ export default async function DashboardPage() {
             <StatusBadge value="active" />
           </div>
 
-          <div className="surface-panel gap-4 p-6">
+          <div className="surface-panel gap-4 p-5 sm:p-6">
             <div className="flex items-center gap-3">
               <div className="rounded-2xl bg-neutral-950 p-3 text-white"><ShieldCheck className="size-5" /></div>
               <div>

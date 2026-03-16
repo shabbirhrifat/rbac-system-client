@@ -21,16 +21,16 @@ export default async function UserPermissionsPage({ params }: UserPermissionsPag
         badge={`${userAccess.permissions.all.length} effective permissions`}
       />
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <div className="surface-panel gap-3 p-5">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="surface-panel gap-3 p-5 sm:p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Pages</p>
           <p className="text-3xl font-semibold text-neutral-950">{userAccess.permissions.pages.length}</p>
         </div>
-        <div className="surface-panel gap-3 p-5">
+        <div className="surface-panel gap-3 p-5 sm:p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Actions</p>
           <p className="text-3xl font-semibold text-neutral-950">{userAccess.permissions.actions.length}</p>
         </div>
-        <div className="surface-panel gap-3 p-5">
+        <div className="surface-panel gap-3 p-5 sm:p-6">
           <p className="text-xs uppercase tracking-[0.2em] text-neutral-400">Sidebar routes</p>
           <p className="text-3xl font-semibold text-neutral-950">{userAccess.sidebarItems.length}</p>
         </div>

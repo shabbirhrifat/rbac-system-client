@@ -10,9 +10,9 @@ type EmptyStateProps = {
 
 export function EmptyState({ title, description, actionHref, actionLabel }: EmptyStateProps) {
   return (
-    <Card className="items-start gap-4 p-6">
+    <Card className="items-start gap-4 p-5 sm:p-6">
       <div className="space-y-2">
-        <h3 className="font-display text-xl font-semibold tracking-tight text-neutral-950">{title}</h3>
+        <h3 className="font-display text-lg font-semibold tracking-tight text-neutral-950 sm:text-xl">{title}</h3>
         <p className="max-w-xl text-sm leading-7 text-neutral-500">{description}</p>
       </div>
       {actionHref && actionLabel ? (

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { CreateFormSheet } from "@/components/forms/create-form-sheet";
@@ -34,30 +35,38 @@ export default async function UsersPage({ searchParams }: UsersPageProps) {
         }
       />
 
-      <div className="surface-panel gap-6 p-6">
-        <DataTable
-          rows={users.items}
-          columns={[
-            {
-              header: "Person",
-              render: (user) => (
-                <div className="space-y-1">
-                  <Link href={`/users/${user.id}`} className="font-medium text-neutral-900 hover:text-brand-600">
-                    {user.firstName} {user.lastName}
-                  </Link>
-                  <p className="text-xs text-neutral-500">{user.email}</p>
-                </div>
-              ),
-            },
-            { header: "Role", render: (user) => user.role.name },
-            { header: "Status", render: (user) => <StatusBadge value={user.status} /> },
-            {
-              header: "Manager",
-              render: (user) => user.manager ? `${user.manager.firstName} ${user.manager.lastName}` : "-",
-            },
-            { header: "Last login", render: (user) => formatDate(user.lastLoginAt) },
-          ]}
-        />
+      <div className="surface-panel gap-6 p-5 sm:p-6">
+        {users.items.length ? (
+          <DataTable
+            rows={users.items}
+            getRowKey={(user) => user.id}
+            columns={[
+              {
+                header: "Person",
+                render: (user) => (
+                  <div className="space-y-1">
+                    <Link href={`/users/${user.id}`} className="font-medium text-neutral-900 hover:text-brand-600">
+                      {user.firstName} {user.lastName}
+                    </Link>
+                    <p className="text-xs text-neutral-500">{user.email}</p>
+                  </div>
+                ),
+              },
+              { header: "Role", render: (user) => user.role.name },
+              { header: "Status", render: (user) => <StatusBadge value={user.status} /> },
+              {
+                header: "Manager",
+                render: (user) => user.manager ? `${user.manager.firstName} ${user.manager.lastName}` : "-",
+              },
+              { header: "Last login", render: (user) => formatDate(user.lastLoginAt) },
+            ]}
+          />
+        ) : (
+          <EmptyState
+            title="No users in scope yet"
+            description="When your role can access or create people records, they will appear here with status and manager details."
+          />
+        )}
       </div>
     </div>
   );

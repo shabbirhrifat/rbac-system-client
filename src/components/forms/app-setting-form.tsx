@@ -2,20 +2,24 @@
 
 import { LoaderCircle } from "lucide-react";
 import { updateAppSettingAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormAction } from "@/lib/use-form-action";
 import type { AppSettingItem } from "@/types/api";
 
 export function AppSettingForm({ setting }: { setting: AppSettingItem }) {
-  const { formAction, pending } = useFormAction(updateAppSettingAction);
+  const sheet = useSheetAutoClose();
+  const { formAction, pending } = useFormAction(updateAppSettingAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
-    <form action={formAction} className="grid gap-4 rounded-[24px] border border-neutral-200 bg-neutral-50/80 p-4">
+    <form action={formAction} className="grid gap-5">
       <input type="hidden" name="key" value={setting.key} />
-      <div>
+      <div className="space-y-1">
         <p className="text-sm font-semibold text-neutral-900">{setting.key}</p>
-        <p className="mt-1 text-xs text-neutral-500">Edit JSON payload and save to upsert this app-level setting.</p>
+        <p className="text-sm leading-6 text-neutral-500">Edit the JSON payload and save to upsert this app-level setting.</p>
       </div>
       <Textarea name="value" defaultValue={JSON.stringify(setting.value, null, 2)} className="min-h-40 font-mono text-xs" />
       <Button type="submit" variant="outline" disabled={pending} className="w-full sm:w-fit">

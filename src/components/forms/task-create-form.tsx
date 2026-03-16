@@ -2,6 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import { createTaskAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -10,7 +11,10 @@ import { useFormAction } from "@/lib/use-form-action";
 import type { Lead, UserListItem } from "@/types/api";
 
 export function TaskCreateForm({ users, leads, customers }: { users: UserListItem[]; leads: Lead[]; customers: UserListItem[] }) {
-  const { formAction, pending } = useFormAction(createTaskAction);
+  const sheet = useSheetAutoClose();
+  const { formAction, pending } = useFormAction(createTaskAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <form action={formAction} className="grid gap-5">

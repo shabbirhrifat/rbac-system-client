@@ -57,6 +57,28 @@ export async function backendRequest<T>(
     return response as T;
   }
 
+  // ── Auto-refresh on 401: try to get a new access token and retry ──
+  if (response.status === 401 && refreshToken && authEnabled) {
+    const retryResult = await refreshAndRetry<T>(path, init, refreshToken);
+    if (retryResult !== null) return retryResult;
+
+    // Refresh failed — clear stale cookies if possible, then redirect or throw
+    try {
+      const cs = await cookies();
+      cs.delete(ACCESS_COOKIE_NAME);
+      cs.delete(REFRESH_COOKIE_NAME);
+    } catch {
+      // cookie mutation not allowed during rendering — proxy handles it
+    }
+
+    if (options.redirectOnUnauthorized) {
+      redirect("/login");
+    }
+
+    const payload = await parseResponse(response);
+    throw new ApiError(getErrorMessage(payload), response.status, payload);
+  }
+
   if (!response.ok) {
     const payload = await parseResponse(response);
 
@@ -68,6 +90,60 @@ export async function backendRequest<T>(
   }
 
   return (await parseResponse(response)) as T;
+}
+
+async function refreshAndRetry<T>(
+  path: string,
+  init: RequestInit,
+  refreshToken: string,
+): Promise<T | null> {
+  try {
+    const refreshResponse = await fetch(`${getApiBaseUrl()}/auth/refresh`, {
+      method: "POST",
+      headers: { cookie: `${REFRESH_COOKIE_NAME}=${refreshToken}` },
+      cache: "no-store",
+    });
+
+    if (!refreshResponse.ok) return null;
+
+    const data = await refreshResponse.json();
+    if (!data.accessToken) return null;
+
+    // Persist the new access token cookie (best-effort; fails during rendering)
+    try {
+      const cookieStore = await cookies();
+      cookieStore.set(ACCESS_COOKIE_NAME, data.accessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        maxAge: data.accessTokenExpiresIn ?? 900,
+      });
+    } catch {
+      // Not in a mutable context — the proxy will handle cookie persistence
+    }
+
+    // Retry the original request with the fresh access token
+    const retryHeaders = new Headers(init.headers);
+    retryHeaders.set("authorization", `Bearer ${data.accessToken}`);
+
+    const retryRefreshCookie = buildRefreshCookieHeader(refreshToken);
+    if (retryRefreshCookie) {
+      retryHeaders.set("cookie", retryRefreshCookie);
+    }
+
+    const retryResponse = await fetch(`${getApiBaseUrl()}${path}`, {
+      ...init,
+      headers: retryHeaders,
+      cache: "no-store",
+    });
+
+    if (!retryResponse.ok) return null;
+
+    return (await parseResponse(retryResponse)) as T;
+  } catch {
+    return null;
+  }
 }
 
 export async function backendRequestWithResponse(

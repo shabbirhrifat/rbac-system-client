@@ -2,6 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import { replaceUserOverridesAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useFormAction } from "@/lib/use-form-action";
@@ -14,7 +15,10 @@ export function PermissionOverridesForm({
   userAccess: AccessUserResponse;
   grantable: PermissionCatalogItem[];
 }) {
-  const { formAction, pending } = useFormAction(replaceUserOverridesAction);
+  const sheet = useSheetAutoClose();
+  const { formAction, pending } = useFormAction(replaceUserOverridesAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   const initialValue = userAccess.overrides
     .map((override) => `${override.permission.key}:${override.effect}${override.expiresAt ? `:${override.expiresAt}` : ""}`)

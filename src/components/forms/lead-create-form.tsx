@@ -2,6 +2,7 @@
 
 import { LoaderCircle } from "lucide-react";
 import { createLeadAction } from "@/actions/resources";
+import { useSheetAutoClose } from "@/components/forms/create-form-sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
@@ -10,7 +11,10 @@ import { useFormAction } from "@/lib/use-form-action";
 import type { UserListItem } from "@/types/api";
 
 export function LeadCreateForm({ users, customers }: { users: UserListItem[]; customers: UserListItem[] }) {
-  const { formAction, pending } = useFormAction(createLeadAction);
+  const sheet = useSheetAutoClose();
+  const { formAction, pending } = useFormAction(createLeadAction, {
+    onSuccess: () => sheet?.close(),
+  });
 
   return (
     <form action={formAction} className="grid gap-5">
