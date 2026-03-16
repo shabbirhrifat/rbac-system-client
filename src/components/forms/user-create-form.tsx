@@ -1,12 +1,18 @@
+"use client";
+
+import { LoaderCircle } from "lucide-react";
 import { createUserAction } from "@/actions/resources";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useFormAction } from "@/lib/use-form-action";
 import type { UserListItem } from "@/types/api";
 
 export function UserCreateForm({ managers }: { managers: UserListItem[] }) {
+  const { formAction, pending } = useFormAction(createUserAction);
+
   return (
-    <form action={createUserAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-4">
       <div className="form-grid">
         <label className="space-y-2">
           <span className="field-label">First name</span>
@@ -57,7 +63,10 @@ export function UserCreateForm({ managers }: { managers: UserListItem[] }) {
           </Select>
         </label>
       </div>
-      <Button type="submit" className="w-full md:w-fit">Create user</Button>
+      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+        {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
+        {pending ? "Creating..." : "Create user"}
+      </Button>
     </form>
   );
 }

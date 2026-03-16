@@ -62,6 +62,16 @@ export const config = {
 async function getRouteContext(request: NextRequest): Promise<RouteContext> {
   const accessToken = request.cookies.get(ACCESS_COOKIE_NAME)?.value;
   const refreshToken = request.cookies.get(REFRESH_COOKIE_NAME)?.value;
+
+  if (!accessToken && !refreshToken) {
+    return {
+      authenticated: false,
+      pagePermissions: [],
+      routes: [],
+      sidebarItems: [],
+    };
+  }
+
   const headers = new Headers();
 
   if (accessToken) {

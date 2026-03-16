@@ -6,6 +6,7 @@ import { FormSection } from "@/components/forms/form-section";
 import { TaskCreateForm } from "@/components/forms/task-create-form";
 import { getLeads, getTasks, getUsers, listPageMeta } from "@/lib/data";
 import { formatDate } from "@/lib/format";
+import { getCurrentUser } from "@/lib/server-api";
 
 type TasksPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -13,7 +14,27 @@ type TasksPageProps = {
 
 export default async function TasksPage({ searchParams }: TasksPageProps) {
   const filters = await searchParams;
-  const [tasks, users, leads] = await Promise.all([getTasks(filters), getUsers(), getLeads({ limit: "100" })]);
+  const me = await getCurrentUser();
+  const canCreateTask = me.permissions.actions.includes("tasks.create");
+  const canReadUsers = me.permissions.actions.includes("users.read");
+  const canReadLeads = me.permissions.actions.includes("leads.read");
+
+  const emptyUsers = {
+    items: [],
+    meta: { page: 1, limit: 0, total: 0, totalPages: 1 },
+  };
+  const emptyLeads = {
+    items: [],
+    meta: { page: 1, limit: 0, total: 0, totalPages: 1 },
+  };
+
+  const [tasks, users, leads] = await Promise.all([
+    getTasks(filters),
+    canCreateTask && canReadUsers ? getUsers() : Promise.resolve(emptyUsers),
+    canCreateTask && canReadLeads
+      ? getLeads({ limit: "100" })
+      : Promise.resolve(emptyLeads),
+  ]);
   const customers = users.items.filter((user) => user.role.key === "customer");
 
   return (
@@ -33,22 +54,50 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
               header: "Task",
               render: (task) => (
                 <div className="space-y-1">
-                  <Link href={`/tasks/${task.id}`} className="font-medium text-neutral-900 hover:text-brand-600">{task.title}</Link>
-                  <p className="text-xs text-neutral-500">{task.description ?? "No description"}</p>
+                  <Link
+                    href={`/tasks/${task.id}`}
+                    className="font-medium text-neutral-900 hover:text-brand-600"
+                  >
+                    {task.title}
+                  </Link>
+                  <p className="text-xs text-neutral-500">
+                    {task.description ?? "No description"}
+                  </p>
                 </div>
               ),
             },
-            { header: "Status", render: (task) => <StatusBadge value={task.status} /> },
-            { header: "Priority", render: (task) => <StatusBadge value={task.priority} /> },
-            { header: "Assignee", render: (task) => task.assignedToUser ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}` : "Unassigned" },
+            {
+              header: "Status",
+              render: (task) => <StatusBadge value={task.status} />,
+            },
+            {
+              header: "Priority",
+              render: (task) => <StatusBadge value={task.priority} />,
+            },
+            {
+              header: "Assignee",
+              render: (task) =>
+                task.assignedToUser
+                  ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}`
+                  : "Unassigned",
+            },
             { header: "Due", render: (task) => formatDate(task.dueAt) },
           ]}
         />
       </div>
 
-      <FormSection title="Create task" description="Create scoped work items and attach them to leads or customers when relevant.">
-        <TaskCreateForm users={users.items} leads={leads.items} customers={customers} />
-      </FormSection>
+      {canCreateTask ? (
+        <FormSection
+          title="Create task"
+          description="Create scoped work items and attach them to leads or customers when relevant."
+        >
+          <TaskCreateForm
+            users={users.items}
+            leads={leads.items}
+            customers={customers}
+          />
+        </FormSection>
+      ) : null}
     </div>
   );
 }

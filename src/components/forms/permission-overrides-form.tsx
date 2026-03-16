@@ -1,6 +1,10 @@
+"use client";
+
+import { LoaderCircle } from "lucide-react";
 import { replaceUserOverridesAction } from "@/actions/resources";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormAction } from "@/lib/use-form-action";
 import type { AccessUserResponse, PermissionCatalogItem } from "@/types/api";
 
 export function PermissionOverridesForm({
@@ -10,12 +14,14 @@ export function PermissionOverridesForm({
   userAccess: AccessUserResponse;
   grantable: PermissionCatalogItem[];
 }) {
+  const { formAction, pending } = useFormAction(replaceUserOverridesAction);
+
   const initialValue = userAccess.overrides
     .map((override) => `${override.permission.key}:${override.effect}${override.expiresAt ? `:${override.expiresAt}` : ""}`)
     .join("\n");
 
   return (
-    <form action={replaceUserOverridesAction} className="grid gap-5">
+    <form action={formAction} className="grid gap-5">
       <input type="hidden" name="id" value={userAccess.user.id} />
       <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <label className="space-y-2">
@@ -40,7 +46,10 @@ export function PermissionOverridesForm({
           </div>
         </div>
       </div>
-      <Button type="submit" className="w-full md:w-fit">Replace overrides</Button>
+      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+        {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
+        {pending ? "Replacing..." : "Replace overrides"}
+      </Button>
     </form>
   );
 }

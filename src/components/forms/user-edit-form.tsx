@@ -1,12 +1,18 @@
+"use client";
+
+import { LoaderCircle } from "lucide-react";
 import { updateUserAction } from "@/actions/resources";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useFormAction } from "@/lib/use-form-action";
 import type { UserDetail, UserListItem } from "@/types/api";
 
 export function UserEditForm({ user, managers }: { user: UserDetail; managers: UserListItem[] }) {
+  const { formAction, pending } = useFormAction(updateUserAction);
+
   return (
-    <form action={updateUserAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-4">
       <input type="hidden" name="id" value={user.id} />
       <div className="form-grid">
         <label className="space-y-2">
@@ -46,7 +52,10 @@ export function UserEditForm({ user, managers }: { user: UserDetail; managers: U
           </Select>
         </label>
       </div>
-      <Button type="submit" className="w-full md:w-fit">Save profile changes</Button>
+      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+        {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
+        {pending ? "Saving..." : "Save profile changes"}
+      </Button>
     </form>
   );
 }

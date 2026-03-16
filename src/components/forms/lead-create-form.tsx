@@ -1,13 +1,19 @@
+"use client";
+
+import { LoaderCircle } from "lucide-react";
 import { createLeadAction } from "@/actions/resources";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useFormAction } from "@/lib/use-form-action";
 import type { UserListItem } from "@/types/api";
 
 export function LeadCreateForm({ users, customers }: { users: UserListItem[]; customers: UserListItem[] }) {
+  const { formAction, pending } = useFormAction(createLeadAction);
+
   return (
-    <form action={createLeadAction} className="grid gap-4">
+    <form action={formAction} className="grid gap-4">
       <div className="form-grid">
         <label className="space-y-2"><span className="field-label">Name</span><Input name="name" required /></label>
         <label className="space-y-2"><span className="field-label">Company</span><Input name="company" /></label>
@@ -24,7 +30,10 @@ export function LeadCreateForm({ users, customers }: { users: UserListItem[]; cu
         </label>
         <label className="space-y-2 md:col-span-2"><span className="field-label">Notes</span><Textarea name="notes" /></label>
       </div>
-      <Button type="submit" className="w-full md:w-fit">Create lead</Button>
+      <Button type="submit" disabled={pending} className="w-full md:w-fit">
+        {pending ? <LoaderCircle className="size-4 animate-spin mr-2" /> : null}
+        {pending ? "Creating..." : "Create lead"}
+      </Button>
     </form>
   );
 }

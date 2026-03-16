@@ -4,8 +4,39 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { backendRequestWithResponse } from "@/lib/server-api";
 
-export async function createUserAction(formData: FormData) {
-  await backendRequestWithResponse("/users", {
+export type ActionState = {
+  success?: string;
+  error?: string;
+};
+
+const emptyState: ActionState = {};
+
+async function safeRequest(
+  path: string,
+  init: RequestInit,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const response = await backendRequestWithResponse(path, init) as unknown as Response;
+    if (!response.ok) {
+      const payload = await response.json().catch(() => null);
+      const message = Array.isArray(payload?.message)
+        ? payload.message.join(", ")
+        : payload?.message ?? "Request failed";
+      return { ok: false, error: message };
+    }
+    return { ok: true };
+  } catch (err: unknown) {
+    const message =
+      err instanceof Error ? err.message : "An unexpected error occurred";
+    return { ok: false, error: message };
+  }
+}
+
+export async function createUserAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await safeRequest("/users", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -20,13 +51,18 @@ export async function createUserAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath("/users");
   redirect("/users");
 }
 
-export async function updateUserAction(formData: FormData) {
+export async function updateUserAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/users/${id}`, {
+  const result = await safeRequest(`/users/${id}`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -39,53 +75,73 @@ export async function updateUserAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/users/${id}`);
   revalidatePath("/users");
   redirect(`/users/${id}`);
 }
 
-export async function updateUserStatusAction(formData: FormData) {
+export async function updateUserStatusAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/users/${id}/status`, {
+  const result = await safeRequest(`/users/${id}/status`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ status: getString(formData, "status") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/users/${id}`);
   revalidatePath("/users");
   redirect(`/users/${id}`);
 }
 
-export async function updateUserManagerAction(formData: FormData) {
+export async function updateUserManagerAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/users/${id}/manager`, {
+  const result = await safeRequest(`/users/${id}/manager`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ managerId: getOptionalString(formData, "managerId") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/users/${id}`);
   revalidatePath("/users");
   redirect(`/users/${id}`);
 }
 
-export async function replaceUserOverridesAction(formData: FormData) {
+export async function replaceUserOverridesAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
   const overrides = parseOverrides(String(formData.get("overrides") ?? ""));
 
-  await backendRequestWithResponse(`/access/users/${id}`, {
+  const result = await safeRequest(`/access/users/${id}`, {
     method: "PUT",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ overrides }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/users/${id}/permissions`);
   redirect(`/users/${id}/permissions`);
 }
 
-export async function createLeadAction(formData: FormData) {
-  await backendRequestWithResponse("/leads", {
+export async function createLeadAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await safeRequest("/leads", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -100,13 +156,18 @@ export async function createLeadAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath("/leads");
   redirect("/leads");
 }
 
-export async function updateLeadAction(formData: FormData) {
+export async function updateLeadAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/leads/${id}`, {
+  const result = await safeRequest(`/leads/${id}`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -120,39 +181,54 @@ export async function updateLeadAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/leads/${id}`);
   revalidatePath("/leads");
   redirect(`/leads/${id}`);
 }
 
-export async function updateLeadStatusAction(formData: FormData) {
+export async function updateLeadStatusAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/leads/${id}/status`, {
+  const result = await safeRequest(`/leads/${id}/status`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ status: getString(formData, "status") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/leads/${id}`);
   revalidatePath("/leads");
   redirect(`/leads/${id}`);
 }
 
-export async function assignLeadAction(formData: FormData) {
+export async function assignLeadAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/leads/${id}/assign`, {
+  const result = await safeRequest(`/leads/${id}/assign`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ assignedToUserId: getOptionalString(formData, "assignedToUserId") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/leads/${id}`);
   revalidatePath("/leads");
   redirect(`/leads/${id}`);
 }
 
-export async function createTaskAction(formData: FormData) {
-  await backendRequestWithResponse("/tasks", {
+export async function createTaskAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await safeRequest("/tasks", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -166,13 +242,18 @@ export async function createTaskAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath("/tasks");
   redirect("/tasks");
 }
 
-export async function updateTaskAction(formData: FormData) {
+export async function updateTaskAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/tasks/${id}`, {
+  const result = await safeRequest(`/tasks/${id}`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -185,39 +266,54 @@ export async function updateTaskAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/tasks/${id}`);
   revalidatePath("/tasks");
   redirect(`/tasks/${id}`);
 }
 
-export async function updateTaskStatusAction(formData: FormData) {
+export async function updateTaskStatusAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/tasks/${id}/status`, {
+  const result = await safeRequest(`/tasks/${id}/status`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ status: getString(formData, "status") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/tasks/${id}`);
   revalidatePath("/tasks");
   redirect(`/tasks/${id}`);
 }
 
-export async function assignTaskAction(formData: FormData) {
+export async function assignTaskAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const id = getString(formData, "id");
-  await backendRequestWithResponse(`/tasks/${id}/assign`, {
+  const result = await safeRequest(`/tasks/${id}/assign`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ assignedToUserId: getOptionalString(formData, "assignedToUserId") }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath(`/tasks/${id}`);
   revalidatePath("/tasks");
   redirect(`/tasks/${id}`);
 }
 
-export async function updateSettingsProfileAction(formData: FormData) {
-  await backendRequestWithResponse("/settings/profile", {
+export async function updateSettingsProfileAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await safeRequest("/settings/profile", {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -232,26 +328,43 @@ export async function updateSettingsProfileAction(formData: FormData) {
     }),
   });
 
+  if (!result.ok) return { error: result.error };
+
   revalidatePath("/settings");
   redirect("/settings");
 }
 
-export async function updateAppSettingAction(formData: FormData) {
+export async function updateAppSettingAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
   const key = getString(formData, "key");
   const value = String(formData.get("value") ?? "{}").trim();
 
-  await backendRequestWithResponse(`/settings/app/${key}`, {
+  let parsed;
+  try {
+    parsed = JSON.parse(value || "{}");
+  } catch {
+    return { error: "Invalid JSON payload" };
+  }
+
+  const result = await safeRequest(`/settings/app/${key}`, {
     method: "PATCH",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ value: JSON.parse(value || "{}") }),
+    body: JSON.stringify({ value: parsed }),
   });
+
+  if (!result.ok) return { error: result.error };
 
   revalidatePath("/settings");
   redirect("/settings");
 }
 
-export async function updatePortalProfileAction(formData: FormData) {
-  await backendRequestWithResponse("/portal/profile", {
+export async function updatePortalProfileAction(
+  _prev: ActionState,
+  formData: FormData,
+): Promise<ActionState> {
+  const result = await safeRequest("/portal/profile", {
     method: "PATCH",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({
@@ -260,6 +373,8 @@ export async function updatePortalProfileAction(formData: FormData) {
       phone: getOptionalString(formData, "phone"),
     }),
   });
+
+  if (!result.ok) return { error: result.error };
 
   revalidatePath("/portal");
   redirect("/portal");
