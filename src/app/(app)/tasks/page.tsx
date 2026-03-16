@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { DataTable } from "@/components/data-table";
 import { EmptyState } from "@/components/empty-state";
+import { ListFilters } from "@/components/list-filters";
+import { ListPagination } from "@/components/list-pagination";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { CreateFormSheet } from "@/components/forms/create-form-sheet";
@@ -12,6 +14,19 @@ import { getCurrentUser } from "@/lib/server-api";
 type TasksPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 };
+
+const statusOptions = [
+  { label: "To do", value: "todo" },
+  { label: "In progress", value: "in_progress" },
+  { label: "Done", value: "done" },
+  { label: "Cancelled", value: "cancelled" },
+];
+
+const priorityOptions = [
+  { label: "Low", value: "low" },
+  { label: "Medium", value: "medium" },
+  { label: "High", value: "high" },
+];
 
 export default async function TasksPage({ searchParams }: TasksPageProps) {
   const filters = await searchParams;
@@ -63,45 +78,57 @@ export default async function TasksPage({ searchParams }: TasksPageProps) {
       />
 
       <div className="surface-panel gap-6 p-5 sm:p-6">
+        <ListFilters
+          searchKey="search"
+          searchPlaceholder="Search tasks..."
+          filters={[
+            { key: "status", label: "All statuses", options: statusOptions },
+            { key: "priority", label: "All priorities", options: priorityOptions },
+          ]}
+        />
+
         {tasks.items.length ? (
-          <DataTable
-            rows={tasks.items}
-            getRowKey={(task) => task.id}
-            columns={[
-              {
-                header: "Task",
-                render: (task) => (
-                  <div className="space-y-1">
-                    <Link
-                      href={`/tasks/${task.id}`}
-                      className="font-medium text-neutral-900 hover:text-brand-600"
-                    >
-                      {task.title}
-                    </Link>
-                    <p className="text-xs text-neutral-500">
-                      {task.description ?? "No description"}
-                    </p>
-                  </div>
-                ),
-              },
-              {
-                header: "Status",
-                render: (task) => <StatusBadge value={task.status} />,
-              },
-              {
-                header: "Priority",
-                render: (task) => <StatusBadge value={task.priority} />,
-              },
-              {
-                header: "Assignee",
-                render: (task) =>
-                  task.assignedToUser
-                    ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}`
-                    : "Unassigned",
-              },
-              { header: "Due", render: (task) => formatDate(task.dueAt) },
-            ]}
-          />
+          <>
+            <DataTable
+              rows={tasks.items}
+              getRowKey={(task) => task.id}
+              columns={[
+                {
+                  header: "Task",
+                  render: (task) => (
+                    <div className="space-y-1">
+                      <Link
+                        href={`/tasks/${task.id}`}
+                        className="font-medium text-neutral-900 hover:text-brand-600"
+                      >
+                        {task.title}
+                      </Link>
+                      <p className="text-xs text-neutral-500">
+                        {task.description ?? "No description"}
+                      </p>
+                    </div>
+                  ),
+                },
+                {
+                  header: "Status",
+                  render: (task) => <StatusBadge value={task.status} />,
+                },
+                {
+                  header: "Priority",
+                  render: (task) => <StatusBadge value={task.priority} />,
+                },
+                {
+                  header: "Assignee",
+                  render: (task) =>
+                    task.assignedToUser
+                      ? `${task.assignedToUser.firstName} ${task.assignedToUser.lastName}`
+                      : "Unassigned",
+                },
+                { header: "Due", render: (task) => formatDate(task.dueAt) },
+              ]}
+            />
+            <ListPagination page={tasks.meta.page} totalPages={tasks.meta.totalPages} total={tasks.meta.total} />
+          </>
         ) : (
           <EmptyState
             title="No tasks to review"
