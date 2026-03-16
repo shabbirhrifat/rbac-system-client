@@ -14,6 +14,8 @@
   --color-brand-500: #ff623e;
   --color-brand-600: #e24e2b;
   --color-brand-700: #b93a1d;
+  --color-brand-primary: #FD6D3F;
+  --color-brand-dark: #FD5E2B;
   --color-neutral-50: #f7f8fb;
   --color-neutral-100: #eef1f5;
   --color-neutral-200: #dfe4ea;
@@ -126,11 +128,12 @@
   }
 
   .field-input {
-    @apply w-full rounded-2xl border border-neutral-200 bg-white px-4 py-3 text-sm text-neutral-800 transition-all placeholder:text-neutral-400 focus:border-brand-300 focus:ring-4 focus:ring-brand-100;
+    @apply w-[380px] h-[40px] rounded-[12px] border bg-white px-[10px] py-0 text-sm text-neutral-800 transition-all placeholder:text-neutral-400 focus:border-black focus:ring-4 focus:ring-black/10 focus:ring-offset-2 focus:ring-offset-white;
+    border-color: rgba(0, 0, 0, 0.1);
   }
 
   .field-label {
-    @apply text-sm font-medium text-neutral-700;
+    @apply text-[14px] font-medium text-[#404857] font-sans;
   }
 
   .form-grid {
